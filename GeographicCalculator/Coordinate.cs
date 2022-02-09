@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace GeographicCalculator
 {
     class Coordinate
@@ -16,12 +13,14 @@ namespace GeographicCalculator
         float wgs84X;
         float wgs84Y;
 
+        //Hermetyzacja i korzystanie z wlasciowsci
         public float X { get => x; set => x = value; }
         public float Y { get => y; set => y = value; }
         public int Id { get => id; }
         public float Wgs84X { get => wgs84X; set => wgs84X = value; }
         public float Wgs84Y { get => wgs84Y; set => wgs84Y = value; }
 
+        //konstruktor
         public Coordinate(float x, float y, float z, string gesut)
         {
             this.x = x;
@@ -31,6 +30,7 @@ namespace GeographicCalculator
             this.gesut = gesut;
         }
 
+        //nadpisana metoda ToString
         public override string ToString()
         {
 

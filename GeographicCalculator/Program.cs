@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 
 namespace GeographicCalculator
@@ -10,7 +9,9 @@ namespace GeographicCalculator
     {
         //sciezka do pliku z danymi
         static string path = "../../../wspolrzedneV2.txt";
+        //sciezka do zapisywanego pliku tekstowego
         static string pathToSave = "../../../wspolrzedneZapisane.txt";
+
         //lista ktora przechowa wszystkie wczytane obiekty coordinate
         static List<Coordinate> coordinates = new List<Coordinate>();
 
@@ -21,7 +22,7 @@ namespace GeographicCalculator
         static void Main(string[] args)
         {
             LoadData(path, coordinates);
-            SaveData(pathToSave, coordinates);
+            
             Console.WriteLine("\nPrzeliczenie koordynatow z systemu 2000 do WGS84");
             foreach (Coordinate coordinate in coordinates)
             {
@@ -33,8 +34,11 @@ namespace GeographicCalculator
             {
                 ChangeFromWGS84To2000(coordinate);
             }
+
+            SaveData(pathToSave, coordinates);
         }
 
+        //utworzenie obiektow z kazdej linni pliku
         static void LoadData(string path, List<Coordinate> coordinates)
         {
             bool first = true;
@@ -51,7 +55,7 @@ namespace GeographicCalculator
                     else
                     {
                         //Console.WriteLine(line);
-                        //normalizacja danych, zmiana . na , aby mozna bylo zaminic stringi na floaty
+                        //normalizacja danych, zmiana . na , aby mozna bylo zamienic stringi na floaty
                         string lineNormalized = line.Replace('.', ',');
                         string[] info = lineNormalized.Split(';');
                         //Console.WriteLine(info.Length);
@@ -74,6 +78,7 @@ namespace GeographicCalculator
                 }
             }
 
+            //wypis wczytanych danych
             Console.WriteLine($"Wczytano {coordinates.Count} obiekty/ow z danymi");
             foreach (Coordinate coordinate1 in coordinates)
             {
@@ -81,12 +86,16 @@ namespace GeographicCalculator
             }
         }
 
+        //zapisywanie danych do pliku tekstowego
         static void SaveData(string path, List<Coordinate> coordinates)
         {
+            //sprawdzenie istnienie pliku, jesli nie istnieje tworzy pusty plik
             if (!File.Exists(path))
             {
                 File.Create(path).Close();
             }
+
+            //zapis kazdego obiektu w oddzielnej linii
             string[] lines = new string[coordinates.Count];
             int i = 0;
             foreach (Coordinate coordinate in coordinates)
@@ -97,6 +106,7 @@ namespace GeographicCalculator
             File.WriteAllLines(path, lines);
         }
 
+        //zmiana danych z formatu 2000 do WGS84 z zapisame w obiekcie
         static void ChangeFrom2000ToWGS84(Coordinate coordinate)
         {
 
@@ -110,6 +120,7 @@ namespace GeographicCalculator
             Console.WriteLine($"{coordinate.Id} X:{wgs84X} Y:{wgs84Y}");
         }
 
+        //zmiana danych z formatu WGS84 do 2000 bez zapisu
         static void ChangeFromWGS84To2000(Coordinate coordinate)
         {
 
