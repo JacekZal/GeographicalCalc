@@ -36,5 +36,11 @@ namespace GeographicCalculator
 
             return $"{id};{x.ToString().Replace(',', '.')};{y.ToString().Replace(',', '.')};{z.ToString().Replace(',', '.')};{gesut}";
         }
+
+        public string ToStringForSave()
+        {
+
+            return $"{id};{x.ToString().Replace(',', '.')};{y.ToString().Replace(',', '.')};{gesut}";
+        }
     }
 }

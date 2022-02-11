@@ -1,0 +1,8 @@
+<gml:featureMember>
+    <ogr:punkt fid="punkt.{IDHERE}">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>{yHERE},{xHERE}</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:OBJECTID>{IDHERE}</ogr:OBJECTID>
+      <ogr:opis>XXX</ogr:opis>
+    </ogr:punkt>
+  </gml:featureMember>
+

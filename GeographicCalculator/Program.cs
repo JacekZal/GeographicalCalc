@@ -8,10 +8,13 @@ namespace GeographicCalculator
     class Program
     {
         //sciezka do pliku z danymi
-        static string path = "../../../wspolrzedneV2.txt";
-        //sciezka do zapisywanego pliku tekstowego
-        static string pathToSave = "../../../wspolrzedneZapisane.txt";
-
+        static string path = "../../../wspolrzedneWejsciowe.txt";
+        //sciezka do zapisywanych plikow
+        static string pathToSaveTXT = "../../../wspolrzedneTXT.txt";
+        static string pathToSaveCSV = "../../../wspolrzedneCSV.csv";
+        static string pathToSaveGML = "../../../wspolrzedneGML.gml";
+        static string pathToSaveKML = "../../../wspolrzedneKML.kml";
+        static string pathToSaveKMZ = "../../../wspolrzedneKMZ.kmz";
         //lista ktora przechowa wszystkie wczytane obiekty coordinate
         static List<Coordinate> coordinates = new List<Coordinate>();
 
@@ -35,7 +38,28 @@ namespace GeographicCalculator
                 ChangeFromWGS84To2000(coordinate);
             }
 
-            SaveData(pathToSave, coordinates);
+            Console.WriteLine("\nPrzeliczenie koordynatow z systemu WGS84 na stopnie minuty i sekundy");
+            foreach (Coordinate coordinate in coordinates)
+            {
+                ChangeFromWGS84ToDegrees(coordinate);
+            }
+
+            
+            //zapis do txt
+            Console.WriteLine($"\nZapis do .txt do pliku {pathToSaveTXT}");
+            SaveData(pathToSaveTXT, coordinates);
+            //zapis do csv
+            Console.WriteLine($"\nZapis do .csv do pliku {pathToSaveCSV}");
+            SaveData(pathToSaveCSV, coordinates);
+            //zapis do gml
+            Console.WriteLine($"\nZapis do .gml do pliku {pathToSaveGML}");
+            DateClass.MakeGMLFile(coordinates, pathToSaveGML);
+            //zapis do kml
+            Console.WriteLine($"\nZapis do .kml do pliku {pathToSaveKML}");
+            DateClass.MakeKMLFile(coordinates, pathToSaveKML);
+            //pakowanie pliku kml do kmz
+            Console.WriteLine($"\nPakowanie pliku .kml do pliku {pathToSaveKMZ} ");
+            DateClass.MakeKMZFile(pathToSaveKML);
         }
 
         //utworzenie obiektow z kazdej linni pliku
@@ -86,7 +110,7 @@ namespace GeographicCalculator
             }
         }
 
-        //zapisywanie danych do pliku tekstowego
+        //zapisywanie danych do pliku tekstowego i csv
         static void SaveData(string path, List<Coordinate> coordinates)
         {
             //sprawdzenie istnienie pliku, jesli nie istnieje tworzy pusty plik
@@ -96,11 +120,12 @@ namespace GeographicCalculator
             }
 
             //zapis kazdego obiektu w oddzielnej linii
-            string[] lines = new string[coordinates.Count];
-            int i = 0;
+            string[] lines = new string[coordinates.Count+1];
+            lines[0] = "ID;X;Y;GESUT";
+            int i = 1;
             foreach (Coordinate coordinate in coordinates)
             {
-                lines[i] = coordinate.ToString();
+                lines[i] = coordinate.ToStringForSave();
                 i++;
             }
             File.WriteAllLines(path, lines);
@@ -132,6 +157,25 @@ namespace GeographicCalculator
 
 
             Console.WriteLine($"{coordinate.Id} X:{x2000} Y:{y2000}");
+        }
+
+        //zmiana danych z formatu WGS84 na stopnie, minuty, sekundy
+        static void ChangeFromWGS84ToDegrees(Coordinate coordinate)
+        {
+            float xWGS84 = coordinate.Wgs84X;
+            float yWGS84 = coordinate.Wgs84Y;
+            
+            //zmiana wartosci X na stopnie minuty sekundy
+            int deegreX = (int)xWGS84;
+            int minutesX = (int)((xWGS84-deegreX)*60);
+            int secondsX = (int)(((xWGS84 - deegreX) * 3600) - minutesX * 60);
+
+            //zmiana wartosci Y na stopnie minuty sekundy
+            int deegreY = (int)yWGS84;
+            int minutesY = (int)((yWGS84 - deegreY) * 60);
+            int secondsY = (int)(((yWGS84 - deegreY) * 3600) - minutesY * 60);
+
+            Console.WriteLine($"{deegreX}° {minutesX}\' {secondsX}\" | {deegreY}° {minutesY}\' {secondsY}\"");
         }
     }
 
